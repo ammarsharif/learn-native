@@ -4,20 +4,18 @@
  *
  * @format
  */
-
+import 'react-native-gesture-handler';
 import React from 'react';
-import { StatusBar, useColorScheme, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar, useColorScheme } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 import { useTheme } from './src/theme/colors';
-import { useTodos } from './src/hooks/useTodos';
-import {
-  Header,
-  TodoInput,
-  TodoFilter,
-  TodoList,
-  EmptyState,
-  ClearButton,
-} from './src/components';
+import { HomeScreen } from './src/pages/HomeScreen';
+import { ProfileScreen } from './src/pages/ProfileScreen';
+import { RootStackParamList } from './src/navigation/types';
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -29,62 +27,13 @@ function App() {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={theme.background}
       />
-      <AppContent theme={theme} />
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaProvider>
-  );
-}
-
-function AppContent({ theme }: { theme: ReturnType<typeof useTheme> }) {
-  const {
-    todos,
-    filter,
-    setFilter,
-    addTodo,
-    toggleTodo,
-    deleteTodo,
-    clearCompleted,
-    getFilteredTodos,
-    stats,
-  } = useTodos();
-
-  const filteredTodos = getFilteredTodos();
-  const hasTodos = todos.length > 0;
-
-  return (
-    <View
-      className="flex-1"
-      style={{ backgroundColor: theme.background }}
-    >
-      <Header theme={theme} activeCount={stats.active} />
-
-      <TodoInput theme={theme} onAddTodo={addTodo} />
-
-      {hasTodos && (
-        <TodoFilter
-          theme={theme}
-          filter={filter}
-          onFilterChange={setFilter}
-          stats={stats}
-        />
-      )}
-
-      {filteredTodos.length > 0 ? (
-        <TodoList
-          todos={filteredTodos}
-          theme={theme}
-          onToggle={toggleTodo}
-          onDelete={deleteTodo}
-        />
-      ) : (
-        <EmptyState theme={theme} filter={filter} hasTodos={hasTodos} />
-      )}
-
-      <ClearButton
-        theme={theme}
-        completedCount={stats.completed}
-        onClear={clearCompleted}
-      />
-    </View>
   );
 }
 
