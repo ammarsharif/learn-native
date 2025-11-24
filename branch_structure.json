@@ -1,0 +1,18 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "boilerplate-native-app",
+    "main",
+    "origin"
+  ],
+  "parent": {
+    "boilerplate-native-app": "main",
+    "main": null,
+    "origin": "main"
+  },
+  "order": [
+    "main",
+    "boilerplate-native-app",
+    "origin"
+  ]
+}
